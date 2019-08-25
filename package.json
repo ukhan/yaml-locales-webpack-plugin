@@ -1,0 +1,45 @@
+{
+  "name": "yaml-locales-webpack-plugin",
+  "version": "0.1.0",
+  "description": "Converts a single YAML file to multiple message.json locale files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [
+    "webpack",
+    "webpack-plugin",
+    "chrome-extension",
+    "yaml",
+    "i18n"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ukhan/yaml-locales-webpack-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ukhan/yaml-locales-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/ukhan/yaml-locales-webpack-plugin#readme",
+  "author": "Pavel Ukhan <pavel.ukhan@gmail.com>",
+  "license": "MIT",
+  "peerDependencies": {
+    "webpack": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@webpack-contrib/eslint-config-webpack": "^3.0.0",
+    "eslint": "^6.2.2",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "husky": "^3.0.4",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.2.3",
+    "prettier": "^1.18.2"
+  },
+  "dependencies": {
+    "js-yaml": "^3.13.1"
+  }
+}
