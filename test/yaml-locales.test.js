@@ -40,6 +40,14 @@ describe('Load YAML file', () => {
       uk: 'Повідомлення для key_4 (UK)'
     });
   });
+
+  test('empty YAML file', () => {
+    const settings = { ...testSettings };
+    settings.yamlFile = './test/empty.yaml';
+
+    yamlLocales = new YamlLocales(settings);
+    expect(Object.keys(yamlLocales.yamlItems).length).toBe(0);
+  });
 });
 
 describe('Check Locales object', () => {
