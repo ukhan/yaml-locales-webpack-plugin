@@ -4,10 +4,17 @@ const { defaultSettings } = require('../src/plugin');
 const testSettings = { ...defaultSettings };
 testSettings.yamlFile = defaultSettings.yamlFile.replace('/src/', '/test/');
 
+let yamlLocales;
+
+beforeEach(() => {
+  yamlLocales = new YamlLocales(testSettings);
+});
+
 describe('Check settings', () => {
   test('default settings ok', () => {
     expect(defaultSettings.yamlFile).toBe('./src/i18n-messages.yaml');
     expect(defaultSettings.defaultLanguage).toBe('en');
+    expect(defaultSettings.onlySupportedLanguages).toBeTruthy();
     expect(defaultSettings.messageKeys).toEqual(['message', 'msg', 'm']);
     expect(defaultSettings.descriptionKeys).toEqual([
       'description',
@@ -23,7 +30,6 @@ describe('Check settings', () => {
 
 describe('Load YAML file', () => {
   test('load with default settings', () => {
-    const yamlLocales = new YamlLocales(testSettings);
     expect(Object.keys(yamlLocales.yamlItems).length).toBe(7);
     expect(yamlLocales.yamlItems.key_1).toBe(
       'Message for key_1 (default language)'
@@ -37,12 +43,6 @@ describe('Load YAML file', () => {
 });
 
 describe('Check Locales object', () => {
-  let yamlLocales;
-
-  beforeEach(() => {
-    yamlLocales = new YamlLocales(testSettings);
-  });
-
   test('locales is empty at the beginning', () => {
     expect(yamlLocales.locales).toEqual({});
   });
@@ -88,9 +88,13 @@ describe('Check Locales object', () => {
 });
 
 describe('Parse YAML items', () => {
-  const yamlLocales = new YamlLocales(testSettings);
-  const keys = Object.keys(yamlLocales.yamlItems);
-  const values = Object.values(yamlLocales.yamlItems);
+  let keys;
+  let values;
+
+  beforeEach(() => {
+    keys = Object.keys(yamlLocales.yamlItems);
+    values = Object.values(yamlLocales.yamlItems);
+  });
 
   test('empty item', () => {
     expect(yamlLocales.parseYamlItem({})).toEqual([]);
@@ -199,7 +203,6 @@ describe('Parse YAML items', () => {
 });
 
 describe('Get message and description from YAML object', () => {
-  const yamlLocales = new YamlLocales(testSettings);
   const item = {
     m: 'm_message',
     msg: 'msg_message',
@@ -229,9 +232,13 @@ describe('Get message and description from YAML object', () => {
 });
 
 describe('Add and get locales', () => {
-  const yamlLocales = new YamlLocales(testSettings);
-  const locales = yamlLocales.getLocales();
-  const languages = Object.keys(locales);
+  let locales;
+  let languages;
+
+  beforeEach(() => {
+    locales = yamlLocales.getLocales();
+    languages = Object.keys(locales);
+  });
 
   test('locales languages', () => {
     expect(languages).toEqual(['en', 'ru', 'uk']);
@@ -250,5 +257,40 @@ describe('Add and get locales', () => {
   test('UK locale', () => {
     const ukLocale = locales.uk;
     expect(Object.keys(ukLocale).length).toBe(4);
+  });
+});
+
+describe('Check supported languages', () => {
+  test('en is supported language', () => {
+    expect(yamlLocales.isSupportedLanguage('en')).toBeTruthy();
+  });
+
+  test('foo is not supported language', () => {
+    expect(yamlLocales.isSupportedLanguage('foo')).toBeFalsy();
+  });
+
+  test('add locale with supported language', () => {
+    yamlLocales.addLocaleItem('en_key_1', 'Message 1');
+    expect(yamlLocales.locales).toEqual({
+      en: { en_key_1: { message: 'Message 1' } }
+    });
+  });
+
+  test('add locale with not supported language', () => {
+    expect(() => {
+      yamlLocales.addLocaleItem('key', 'Message', '', 'foo');
+    }).toThrow();
+  });
+
+  test('enable add locale with not supported language', () => {
+    const allLangSupportedLanguages = { ...testSettings };
+    allLangSupportedLanguages.onlySupportedLanguages = false;
+
+    const yamlLocalesAll = new YamlLocales(allLangSupportedLanguages);
+    yamlLocalesAll.addLocaleItem('key', 'Message', '', 'foo');
+
+    expect(yamlLocalesAll.locales).toEqual({
+      foo: { key: { message: 'Message' } }
+    });
   });
 });

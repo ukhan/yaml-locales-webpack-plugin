@@ -7,13 +7,21 @@ class YamlLocales {
    * Initial settings and load YAML file.
    * @param {Object} param
    * @param {string} param.yamlFile - path to YAML file
-   * @param {string} param.defaultLanguage - default language (e.g. 'en')
+   * @param {string} param.defaultLanguage - default language code (e.g. 'en')
+   * @param {boolean} param.onlySupportedLanguages
    * @param {string[]} param.messageKeys - valid keys for messages (e.g. ['message', 'msg', 'm'])
    * @param {string[]} param.descriptionKeys - valid keys for descriptions (e.g. ['description', 'desc', 'd'])
    */
-  constructor({ yamlFile, defaultLanguage, messageKeys, descriptionKeys }) {
+  constructor({
+    yamlFile,
+    defaultLanguage,
+    onlySupportedLanguages,
+    messageKeys,
+    descriptionKeys
+  }) {
     this.yamlItems = yaml.safeLoad(fs.readFileSync(yamlFile, 'utf8'));
     this.defaultLanguage = defaultLanguage;
+    this.onlySupportedLanguages = onlySupportedLanguages;
     this.messageKeys = messageKeys;
     this.descriptionKeys = descriptionKeys;
 
@@ -52,6 +60,12 @@ class YamlLocales {
     description = '',
     language = this.defaultLanguage
   ) {
+    if (this.onlySupportedLanguages && !this.isSupportedLanguage(language)) {
+      throw new Error(
+        `Language '${language}' is not supported by Chrome Web Store.`
+      );
+    }
+
     const item = { message };
     if (description) {
       item.description = description;
@@ -150,6 +164,73 @@ class YamlLocales {
 
   getDescription(item) {
     return this.getKeysValue(item, this.descriptionKeys);
+  }
+
+  /**
+   * Checks for the submitted lang language in the list of supported languages.
+   * @see {@link https://developer.chrome.com/webstore/i18n#localeTable}
+   * @param {string} lang - language code (en, uk, ...)
+   * @returns {boolean}
+   */
+  // eslint-disable-next-line class-methods-use-this
+  isSupportedLanguage(lang) {
+    const supportedLanguages = [
+      'ar',
+      'am',
+      'bg',
+      'bn',
+      'ca',
+      'cs',
+      'da',
+      'de',
+      'el',
+      'en',
+      'en_GB',
+      'en_US',
+      'es',
+      'es_419',
+      'et',
+      'fa',
+      'fi',
+      'fil',
+      'fr',
+      'gu',
+      'he',
+      'hi',
+      'hr',
+      'hu',
+      'id',
+      'it',
+      'ja',
+      'kn',
+      'ko',
+      'lt',
+      'lv',
+      'ml',
+      'mr',
+      'ms',
+      'nl',
+      'no',
+      'pl',
+      'pt_BR',
+      'pt_PT',
+      'ro',
+      'ru',
+      'sk',
+      'sl',
+      'sr',
+      'sv',
+      'sw',
+      'ta',
+      'te',
+      'th',
+      'tr',
+      'uk',
+      'vi',
+      'zh_CN',
+      'zh_TW'
+    ];
+    return supportedLanguages.indexOf(lang) !== -1;
   }
 }
 
