@@ -43,13 +43,13 @@ new YamlLocalesWebpackPlugin(options?: object)
 ## Example of a YAML file
 
 ```yaml
-key_1: Message for key_1 (default language)
+key_1: Message for key_1 (language-independent)
 key_2:
-  message: Message for key_2 (default language)
-  description: Description for key_2 (default language)
+  message: Message for key_2 (language-independent)
+  description: Description for key_2 (language-independent)
 key_3:
-  m: Message for key_3 (default language)
-  d: Description for key_3 (default language)
+  m: Message for key_3 (language-independent)
+  d: Description for key_3 (language-independent)
 key_4:
   en: Message for key_4 (EN)
   ru: Сообщение для key_4 (RU)

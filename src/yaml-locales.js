@@ -31,6 +31,7 @@ class YamlLocales {
 
   getLocales() {
     const keys = Object.keys(this.yamlItems);
+    const keyLangs = {};
 
     keys.forEach(k => {
       const localItems = this.parseYamlItem({
@@ -38,10 +39,30 @@ class YamlLocales {
         value: this.yamlItems[k]
       });
 
+      keyLangs[k] = [];
       localItems.forEach(localItem => {
         const { key, message, description, language } = localItem;
         this.addLocaleItem(key, message, description, language);
+        keyLangs[key].push(language || this.defaultLanguage);
       });
+    });
+
+    // Check and fix missing translations
+    const langs = Object.keys(this.locales);
+    keys.forEach(k => {
+      if (langs.length !== keyLangs[k].length) {
+        langs.forEach(l => {
+          if (keyLangs[k].indexOf(l) === -1) {
+            const substituteLang =
+              keyLangs[k].indexOf(this.defaultLanguage) !== -1
+                ? this.defaultLanguage
+                : keyLangs[k][0];
+
+            const { message, description } = this.locales[substituteLang][k];
+            this.addLocaleItem(k, message, description, l);
+          }
+        });
+      }
     });
 
     return this.locales;

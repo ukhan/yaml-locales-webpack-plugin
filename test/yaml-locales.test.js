@@ -30,9 +30,9 @@ describe('Check settings', () => {
 
 describe('Load YAML file', () => {
   test('load with default settings', () => {
-    expect(Object.keys(yamlLocales.yamlItems).length).toBe(7);
+    expect(Object.keys(yamlLocales.yamlItems).length).toBe(9);
     expect(yamlLocales.yamlItems.key_1).toBe(
-      'Message for key_1 (default language)'
+      'Message for key_1 (language-independent)'
     );
     expect(yamlLocales.yamlItems.key_4).toEqual({
       en: 'Message for key_4 (EN)',
@@ -114,19 +114,19 @@ describe('Parse YAML items', () => {
     ).toEqual([
       {
         key: 'key_1',
-        message: 'Message for key_1 (default language)'
+        message: 'Message for key_1 (language-independent)'
       }
     ]);
   });
 
-  test('message and description for default language', () => {
+  test('message and description for language-independent', () => {
     expect(
       yamlLocales.parseYamlItem({ key: keys[1], value: values[1] })
     ).toEqual([
       {
         key: 'key_2',
-        message: 'Message for key_2 (default language)',
-        description: 'Description for key_2 (default language)'
+        message: 'Message for key_2 (language-independent)',
+        description: 'Description for key_2 (language-independent)'
       }
     ]);
   });
@@ -254,17 +254,36 @@ describe('Add and get locales', () => {
 
   test('EN locale', () => {
     const enLocale = locales.en;
-    expect(Object.keys(enLocale).length).toBe(7);
+    expect(Object.keys(enLocale).length).toBe(9);
   });
 
   test('RU locale', () => {
     const ruLocale = locales.ru;
-    expect(Object.keys(ruLocale).length).toBe(1);
+    expect(Object.keys(ruLocale).length).toBe(9);
   });
 
   test('UK locale', () => {
     const ukLocale = locales.uk;
-    expect(Object.keys(ukLocale).length).toBe(4);
+    expect(Object.keys(ukLocale).length).toBe(9);
+  });
+});
+
+describe('Check missing translations', () => {
+  let locales;
+
+  beforeEach(() => {
+    locales = yamlLocales.getLocales();
+  });
+
+  test('language-independent translation', () => {
+    expect(locales.uk.key_1.message).toBe(
+      'Message for key_1 (language-independent)'
+    );
+  });
+
+  test('translation without default language', () => {
+    expect(locales.en.key_8.message).toBe('Сообщение для key_8 (RU)');
+    expect(locales.en.key_9.message).toBe('Повідомлення для key_9 (UK)');
   });
 });
 
