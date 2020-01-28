@@ -321,3 +321,41 @@ describe('Check supported languages', () => {
     });
   });
 });
+
+describe('Check additions for messages', () => {
+  let locales;
+
+  beforeEach(() => {
+    const settingsWithMessageAdditions = { ...testSettings };
+    settingsWithMessageAdditions.messageAdditions = {
+      key_1: ' adds for key_1',
+      key_4: {
+        en: ' adds for key_4 (EN)',
+        uk: ' adds for key_4 (UK)'
+      }
+    };
+
+    const yamlLocalesWithAdds = new YamlLocales(settingsWithMessageAdditions);
+    locales = yamlLocalesWithAdds.getLocales();
+  });
+
+  test('language-independent message spiced', () => {
+    const spicedMessage =
+      'Message for key_1 (language-independent) adds for key_1';
+    expect(locales.en.key_1.message).toBe(spicedMessage);
+    expect(locales.uk.key_1.message).toBe(spicedMessage);
+    expect(locales.ru.key_1.message).toBe(spicedMessage);
+  });
+
+  test('translated message spiced', () => {
+    expect(locales.en.key_4.message).toBe(
+      'Message for key_4 (EN) adds for key_4 (EN)'
+    );
+    expect(locales.uk.key_4.message).toBe(
+      'Повідомлення для key_4 (UK) adds for key_4 (UK)'
+    );
+    expect(locales.ru.key_4.message).toBe(
+      'Сообщение для key_4 (RU) adds for key_4 (EN)'
+    );
+  });
+});

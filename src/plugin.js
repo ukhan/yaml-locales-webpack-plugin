@@ -5,28 +5,32 @@ const DEFAULT_LANGUAGE = 'en';
 const ONLY_SUPPORTED_LANGUAGES = true;
 const MESSAGE_KEYS = ['message', 'msg', 'm'];
 const DESCRIPTION_KEYS = ['description', 'desc', 'd'];
+const DEFAULT_MESSAGE_ADDS = {};
 
 class YamlLocalesWebpackPlugin {
   /**
    * @param {Object} [options={}]
-   * @param {string} [Object.yamlFile='./src/i18n-messages.yaml']
-   * @param {string} [Object.defaultLanguage='en']
-   * @param {boolean} [Object.onlySupportedLanguages = true]
-   * @param {string[]} [Object.messageKeys=['message', 'msg', 'm']]
-   * @param {string[]} [Object.descriptionKeys=['description', 'desc', 'd']]
+   * @param {string} [options.yamlFile='./src/i18n-messages.yaml']
+   * @param {string} [options.defaultLanguage='en']
+   * @param {boolean} [options.onlySupportedLanguages = true]
+   * @param {string[]} [options.messageKeys=['message', 'msg', 'm']]
+   * @param {string[]} [options.descriptionKeys=['description', 'desc', 'd']]
+   * @param {Object} [options.messageAdditions={}]
    */
   constructor({
     yamlFile = DEFAULT_YAML_FILE,
     defaultLanguage = DEFAULT_LANGUAGE,
     onlySupportedLanguages = ONLY_SUPPORTED_LANGUAGES,
     messageKeys = MESSAGE_KEYS,
-    descriptionKeys = DESCRIPTION_KEYS
+    descriptionKeys = DESCRIPTION_KEYS,
+    messageAdditions = DEFAULT_MESSAGE_ADDS
   } = {}) {
     this.yamlFile = yamlFile;
     this.defaultLanguage = defaultLanguage;
     this.onlySupportedLanguages = onlySupportedLanguages;
     this.messageKeys = messageKeys;
     this.descriptionKeys = descriptionKeys;
+    this.messageAdditions = messageAdditions;
   }
 
   apply(compiler) {
@@ -40,7 +44,8 @@ class YamlLocalesWebpackPlugin {
               defaultLanguage: this.defaultLanguage,
               onlySupportedLanguages: this.onlySupportedLanguages,
               messageKeys: this.messageKeys,
-              descriptionKeys: this.descriptionKeys
+              descriptionKeys: this.descriptionKeys,
+              messageAdditions: this.messageAdditions
             });
 
             const locales = yamlLocales.getLocales();
@@ -75,5 +80,6 @@ module.exports.defaultSettings = {
   defaultLanguage: DEFAULT_LANGUAGE,
   onlySupportedLanguages: ONLY_SUPPORTED_LANGUAGES,
   messageKeys: MESSAGE_KEYS,
-  descriptionKeys: DESCRIPTION_KEYS
+  descriptionKeys: DESCRIPTION_KEYS,
+  messageAdditions: DEFAULT_MESSAGE_ADDS
 };

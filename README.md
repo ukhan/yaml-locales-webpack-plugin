@@ -14,7 +14,7 @@ yarn add --dev yaml-locales-webpack-plugin
 
 ## Usage
 
-**webpack.config.js**
+**webpack.config.js (simple usage)**
 
 ```javascript
 const YamlLocalesWebpackPlugin = require('yaml-locales-webpack-plugin');
@@ -24,19 +24,42 @@ module.exports = {
 };
 ```
 
+**webpack.config.js (with beta build)**
+
+```javascript
+const YamlLocalesWebpackPlugin = require('yaml-locales-webpack-plugin');
+
+module.exports = (env, argv) => {
+  plugins: [
+    new YamlLocalesWebpackPlugin({
+      messageAdditions: argv.beta
+        ? {
+            extName: ' (beta)',
+            extDescription: {
+              en: ' Beta version.',
+              uk: ' Бета версія.'
+            }
+          }
+        : {}
+    })
+  ];
+};
+```
+
 ## Options
 
 ```javascript
 new YamlLocalesWebpackPlugin(options?: object)
 ```
 
-| Name                     | Type       | Default                        | Description                                        |
-| :----------------------- | :--------- | :----------------------------- | :------------------------------------------------- |
-| `yamlFile`               | `string`   | `'./src/i18n-messages.yaml'`   | Path to the YAML file with translations            |
-| `defaultLanguage`        | `string`   | `'en'`                         | Default language                                   |
-| `onlySupportedLanguages` | `boolean`  | `true`                         | Only [supported][langs] Chrome Web Store languages |
-| `messageKeys`            | `string[]` | `['message', 'msg', 'm']`      | Keys in the YAML file to describe messages         |
-| `descriptionKeys`        | `string[]` | `['description', 'desc', 'd']` | Keys in the YAML file for descriptions             |
+| Name                     | Type       | Default                        | Description                                                     |
+| :----------------------- | :--------- | :----------------------------- | :-------------------------------------------------------------- |
+| `yamlFile`               | `string`   | `'./src/i18n-messages.yaml'`   | Path to the YAML file with translations                         |
+| `defaultLanguage`        | `string`   | `'en'`                         | Default language                                                |
+| `onlySupportedLanguages` | `boolean`  | `true`                         | Only [supported][langs] Chrome Web Store languages              |
+| `messageKeys`            | `string[]` | `['message', 'msg', 'm']`      | Keys in the YAML file to describe messages                      |
+| `descriptionKeys`        | `string[]` | `['description', 'desc', 'd']` | Keys in the YAML file for descriptions                          |
+| `messageAdditions`       | `Object`   | `{}`                           | Additions for messages (see example in [Usage](#Usage) section) |
 
 [langs]: https://developer.chrome.com/webstore/i18n#localeTable
 

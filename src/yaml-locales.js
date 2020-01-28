@@ -11,19 +11,22 @@ class YamlLocales {
    * @param {boolean} param.onlySupportedLanguages
    * @param {string[]} param.messageKeys - valid keys for messages (e.g. ['message', 'msg', 'm'])
    * @param {string[]} param.descriptionKeys - valid keys for descriptions (e.g. ['description', 'desc', 'd'])
+   * @param {Object} param.messageAdditions - additions for messages
    */
   constructor({
     yamlFile,
     defaultLanguage,
     onlySupportedLanguages,
     messageKeys,
-    descriptionKeys
+    descriptionKeys,
+    messageAdditions
   }) {
     this.yamlItems = yaml.safeLoad(fs.readFileSync(yamlFile, 'utf8')) || {};
     this.defaultLanguage = defaultLanguage;
     this.onlySupportedLanguages = onlySupportedLanguages;
     this.messageKeys = messageKeys;
     this.descriptionKeys = descriptionKeys;
+    this.messageAdditions = messageAdditions;
 
     // {en: {key1: {message: 'Message'}, ...}, uk: {key1: {message: 'Повідомлення'}, ...}, ...}
     this.locales = {};
@@ -42,7 +45,9 @@ class YamlLocales {
       keyLangs[k] = [];
       localItems.forEach(localItem => {
         const { key, message, description, language } = localItem;
-        this.addLocaleItem(key, message, description, language);
+        const spicedMessage = this.spiceMessage(key, language, message);
+
+        this.addLocaleItem(key, spicedMessage, description, language);
         keyLangs[key].push(language || this.defaultLanguage);
       });
     });
@@ -181,6 +186,25 @@ class YamlLocales {
 
   getMessage(item) {
     return this.getKeysValue(item, this.messageKeys);
+  }
+
+  spiceMessage(key, language, message) {
+    const addsKeys = Object.keys(this.messageAdditions) || [];
+    let spice = '';
+
+    if (addsKeys.length && addsKeys.indexOf(key) !== -1) {
+      if (typeof this.messageAdditions[key] === 'object') {
+        if (Object.keys(this.messageAdditions[key]).indexOf(language) !== -1) {
+          spice = this.messageAdditions[key][language];
+        } else {
+          spice = this.messageAdditions[key][this.defaultLanguage];
+        }
+      } else {
+        spice = this.messageAdditions[key];
+      }
+    }
+
+    return message + spice;
   }
 
   getDescription(item) {
