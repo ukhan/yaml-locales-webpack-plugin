@@ -21,7 +21,7 @@ class YamlLocales {
     descriptionKeys,
     messageAdditions
   }) {
-    this.yamlItems = yaml.safeLoad(fs.readFileSync(yamlFile, 'utf8')) || {};
+    this.yamlItems = yaml.load(fs.readFileSync(yamlFile, 'utf8')) || {};
     this.defaultLanguage = defaultLanguage;
     this.onlySupportedLanguages = onlySupportedLanguages;
     this.messageKeys = messageKeys;
