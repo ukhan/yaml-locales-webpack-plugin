@@ -1,6 +1,6 @@
 {
   "name": "yaml-locales-webpack-plugin",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Converts a single YAML file to multiple message.json locale files.",
   "main": "index.js",
   "scripts": {
@@ -29,15 +29,15 @@
     "webpack": ">=5"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^27.0.1",
     "@webpack-contrib/eslint-config-webpack": "^3.0.0",
-    "eslint": "^7.26.0",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.22.1",
-    "husky": "^6.0.0",
-    "jest": "^26.6.3",
-    "lint-staged": "^11.0.0",
-    "prettier": "^2.3.0"
+    "eslint-plugin-import": "^2.24.2",
+    "husky": "^7.0.2",
+    "jest": "^27.2.0",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.4.1"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"
